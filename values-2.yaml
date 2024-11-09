@@ -1,0 +1,29 @@
+# General Kibana settings
+replicas: 1 # Number of Kibana instances to run
+
+# Kibana configuration
+kibana:
+  config:
+    kibana.yml:
+      server.name: "kibana" # Set the Kibana instance name
+      server.host: "0.0.0.0" # Allow connections from any network interface
+      elasticsearch.hosts: [ "https://elasticsearch-master-0:9200" ] # Link to Elasticsearch service
+      # Optional authentication; enable if Elasticsearch requires login
+      elasticsearch.username: "elastic"
+      elasticsearch.password: "iliass"
+      # Ingress configuration to expose Kibana externally
+ingress:
+  enabled: true
+  hosts:
+  - host: kibana.s9.devopscloud.link # Change the hostname to what you need
+    paths:
+    - path: /
+      pathType: Prefix # Explicitly set path type
+
+# Persistent storage for Kibana (optional, mainly useful for logging/cache)
+# Note: Kind may not persist this between reboots without special configurations
+volumeClaimTemplate:
+  accessModes: [ "ReadWriteOnce" ]
+  resources:
+    requests:
+      storage: 10Gi # Adjust storage size as needed
