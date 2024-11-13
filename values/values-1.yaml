@@ -1,0 +1,52 @@
+clusterName: "elasticsearch"
+nodeGroup: "master"
+
+roles:
+- master
+- data
+- ingest
+
+replicas: 1 # Single-node setup
+
+createCert: true # Self-signed certs, this will automatically create the TLS secret
+
+secret:
+  enabled: true
+  password: "iliass" # For testing, consider using a Kubernetes Secret instead
+
+image: "docker.elastic.co/elasticsearch/elasticsearch"
+imageTag: "8.5.1"
+imagePullPolicy: "IfNotPresent"
+
+resources:
+  requests:
+    cpu: "1000m"
+    memory: "2Gi"
+  limits:
+    cpu: "1000m"
+    memory: "2Gi"
+
+initResources: {}
+
+networkHost: "0.0.0.0" # Allow Elasticsearch to bind to all network interfaces
+
+persistence:
+  enabled: true # Persistence is enabled
+  volumeClaimTemplate:
+    accessModes: [ "ReadWriteOnce" ]
+    resources:
+      requests:
+        storage: 10Gi # Adjust storage based on your needs
+
+# Ingress configuration to expose Elasticsearch externally
+ingress:
+  enabled: true
+  hosts:
+  - host: es-elk.s9.devopscloud.link # Update with your actual hostname
+    paths:
+    - path: /
+      pathType: Prefix # Define path type explicitly
+  tls:
+  - secretName: elasticsearch-tls # This will now refer to the automatically created TLS secret
+    hosts:
+    - es-elk.s9.devopscloud.link # Same hostname as above

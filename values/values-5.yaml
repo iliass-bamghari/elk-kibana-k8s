@@ -1,0 +1,8 @@
+server:
+  ha:
+    enabled: true
+  ui:
+    enabled: true
+
+injector:
+  enabled: true
